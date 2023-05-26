@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.eshare.smbj</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>smbj-operation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>smbj-demo</name>
+    <name>smbj-operation</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
