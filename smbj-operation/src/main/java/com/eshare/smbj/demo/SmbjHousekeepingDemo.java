@@ -22,10 +22,10 @@ public class SmbjHousekeepingDemo extends SmbjCommon {
                 Session session = getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
                 DiskShare share = (DiskShare) session.connectShare("share")
         ) {
-            List<FileIdBothDirectoryInformation> fileList = share.list(subFolder, "*.done");
+            List<FileIdBothDirectoryInformation> fileList = share.list(subFolder, "*");
             for (int i = 0; i < fileList.size(); i++) {
                 FileIdBothDirectoryInformation fileInfo = fileList.get(i);
-                boolean isExisted = share.fileExists(subFolder + fileInfo.getFileName());
+                boolean isExisted = isFileExisted(subFolder,share,fileInfo);
                 if (!isExisted) {
                     log.info("File {} is not existed", fileInfo.getFileName());
                     continue;
@@ -48,5 +48,16 @@ public class SmbjHousekeepingDemo extends SmbjCommon {
                 conn.close();
             }
         }
+    }
+
+    private static boolean isFileExisted(String subFolder, DiskShare share, FileIdBothDirectoryInformation fileInfo) {
+        boolean flag ;
+        try {
+            flag = share.fileExists(subFolder + fileInfo.getFileName());
+        } catch (Exception ex) {
+            log.debug("Exception found :", ex);
+            flag = false;
+        }
+        return flag;
     }
 }

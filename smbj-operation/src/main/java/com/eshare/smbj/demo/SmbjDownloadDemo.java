@@ -60,7 +60,7 @@ public class SmbjDownloadDemo extends SmbjCommon {
     }
 
     private static boolean isFileExisted(String subFolder, DiskShare share, FileIdBothDirectoryInformation fileInfo) {
-        boolean flag = true;
+        boolean flag ;
         try {
             flag = share.fileExists(subFolder + fileInfo.getFileName());
         } catch (Exception ex) {
