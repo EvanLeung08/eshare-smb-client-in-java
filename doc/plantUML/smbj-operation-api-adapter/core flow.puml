@@ -1,0 +1,27 @@
+@startuml
+
+actor User
+
+participant SmbOperationController
+participant SmbOperationServiceImpl
+participant SmbFileUtils
+
+User -> SmbOperationController : Upload/Download/Delete
+activate SmbOperationController
+
+SmbOperationController -> SmbOperationServiceImpl : Upload/Download/Delete
+activate SmbOperationServiceImpl
+
+SmbOperationServiceImpl -> SmbFileUtils : Upload/Download/Delete
+activate SmbFileUtils
+
+SmbFileUtils --> SmbOperationServiceImpl : Result
+deactivate SmbFileUtils
+
+SmbOperationServiceImpl --> SmbOperationController : Result
+deactivate SmbOperationServiceImpl
+
+SmbOperationController --> User : Result
+deactivate SmbOperationController
+
+@enduml

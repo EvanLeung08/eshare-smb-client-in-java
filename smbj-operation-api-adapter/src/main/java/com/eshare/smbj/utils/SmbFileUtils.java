@@ -2,6 +2,7 @@ package com.eshare.smbj.utils;
 
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
+import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2CreateOptions;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
@@ -14,6 +15,7 @@ import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 import com.hierynomus.smbj.utils.SmbFiles;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
 
 import java.io.*;
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Evan Leung
  */
+@Slf4j
 public class SmbFileUtils extends SmbFiles {
 
 
@@ -160,5 +163,23 @@ public class SmbFileUtils extends SmbFiles {
         }
     }
 
+    /**
+     * Check if current file is existed
+     *
+     * @param remoteFolder
+     * @param share
+     * @param fileInfo
+     * @return
+     */
+    public static boolean isFileExisted(String remoteFolder, DiskShare share, FileIdBothDirectoryInformation fileInfo) {
+        boolean flag;
+        try {
+            flag = share.fileExists(remoteFolder + fileInfo.getFileName());
+        } catch (Exception ex) {
+            log.debug("Exception found :", ex);
+            flag = false;
+        }
+        return flag;
+    }
 
 }

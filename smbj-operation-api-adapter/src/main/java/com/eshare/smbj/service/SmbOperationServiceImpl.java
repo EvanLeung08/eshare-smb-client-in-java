@@ -58,7 +58,7 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
                 FileIdBothDirectoryInformation fileInfo = fileList.get(i);
 
 
-                boolean isExisted = isFileExisted(fileDownloadDTO.getRemoteFolder(), share, fileInfo);
+                boolean isExisted = SmbFileUtils.isFileExisted(fileDownloadDTO.getRemoteFolder(), share, fileInfo);
                 if (!isExisted) {
                     log.info("File {} is invalid", fileInfo.getFileName());
                     continue;
@@ -86,15 +86,17 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
             //Close connection in the end
             conn = session.getConnection();
 
-            if (matchFileList.isEmpty()) {
-                throw new NotMatchFilesException("No any match files found, please check your file pattern!", null);
-            }
 
         } finally {
             if (conn != null) {
                 conn.close();
             }
         }
+
+        if (matchFileList.isEmpty()) {
+            throw new NotMatchFilesException("No any match files found, please check your file pattern!", null);
+        }
+
         return true;
     }
 
@@ -105,11 +107,12 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
         Connection conn = null;
         try (
                 DiskShare share = (DiskShare) session.connectShare(fileDeleteDTO.getShareName());
+
         ) {
             List<FileIdBothDirectoryInformation> fileList = share.list(fileDeleteDTO.getRemoteFolder(), "*");
             for (int i = 0; i < fileList.size(); i++) {
                 FileIdBothDirectoryInformation fileInfo = fileList.get(i);
-                boolean isExisted = isFileExisted(fileDeleteDTO.getRemoteFolder(), share, fileInfo);
+                boolean isExisted = SmbFileUtils.isFileExisted(fileDeleteDTO.getRemoteFolder(), share, fileInfo);
                 if (!isExisted) {
                     log.info("File {} is invalid", fileInfo.getFileName());
                     continue;
@@ -130,13 +133,15 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
             }
             //Close connection in the end
             conn = session.getConnection();
-            if (matchFileList.isEmpty()) {
-                throw new NotMatchFilesException("No any match files found, please check your file pattern!", null);
-            }
+
         } finally {
             if (conn != null) {
                 conn.close();
             }
+        }
+
+        if (matchFileList.isEmpty()) {
+            throw new NotMatchFilesException("No any match files found, please check your file pattern!", null);
         }
         return true;
     }
@@ -156,14 +161,4 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
         return false;
     }
 
-    private static boolean isFileExisted(String subFolder, DiskShare share, FileIdBothDirectoryInformation fileInfo) {
-        boolean flag;
-        try {
-            flag = share.fileExists(subFolder + fileInfo.getFileName());
-        } catch (Exception ex) {
-            log.debug("Exception found :", ex);
-            flag = false;
-        }
-        return flag;
-    }
 }
