@@ -1,4 +1,4 @@
-package com.eshare.smbj.demo.common;
+package com.eshare.smbj.common;
 
 public interface Constant {
     String PSW = "123456";

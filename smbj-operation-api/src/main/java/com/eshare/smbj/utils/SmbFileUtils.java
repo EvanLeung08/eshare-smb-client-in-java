@@ -1,11 +1,16 @@
-package com.eshare.smbj.demo.utils;
+package com.eshare.smbj.utils;
 
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2CreateOptions;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
+import com.hierynomus.smbj.SMBClient;
+import com.hierynomus.smbj.SmbConfig;
+import com.hierynomus.smbj.auth.AuthenticationContext;
+import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.io.InputStreamByteChunkProvider;
+import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 import com.hierynomus.smbj.utils.SmbFiles;
@@ -14,12 +19,43 @@ import org.springframework.util.ObjectUtils;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * SMB Utils
+ *
  * @author Evan Leung
  */
 public class SmbFileUtils extends SmbFiles {
+
+
+    /**
+     * Get session
+     *
+     * @param remoteHost remote host
+     * @param account    account
+     * @param password   password
+     * @param domain     account domain
+     * @return SMB Session
+     * @throws IOException
+     */
+    public static Session getSession(String remoteHost, String account, String password, String domain) throws IOException {
+        SmbConfig config = SmbConfig.builder()
+                //automatically choose latest supported smb version
+                .withMultiProtocolNegotiate(true)
+                .withSigningRequired(false)
+                .withTimeout(20, TimeUnit.SECONDS)
+                .withReadTimeout(10, TimeUnit.SECONDS)
+                .withWriteTimeout(10, TimeUnit.SECONDS)
+                .withTransactTimeout(10, TimeUnit.SECONDS)
+                //must enable
+                .withEncryptData(true)
+                .build();
+        SMBClient client = new SMBClient(config);
+        Connection conn = client.connect(remoteHost);
+        AuthenticationContext ac = new AuthenticationContext(account, password.toCharArray(), domain);
+        return conn.authenticate(ac);
+    }
 
 
     /**
@@ -68,10 +104,10 @@ public class SmbFileUtils extends SmbFiles {
     /**
      * Rename file
      *
-     * @param sourcePath the source File read from share drive
-     * @param share the share
+     * @param sourcePath  the source File read from share drive
+     * @param share       the share
      * @param newFilePath the new file name
-     * @param overwrite overwirte if exists
+     * @param overwrite   overwirte if exists
      * @return the actual number of bytes that was written to the file
      * @throws java.io.FileNotFoundException
      * @throws java.io.IOException
@@ -104,22 +140,22 @@ public class SmbFileUtils extends SmbFiles {
 
     /**
      * remove file from share drive
+     *
      * @param sourcePath the file path read from
-     * @param share share drive
+     * @param share      share drive
      * @throws java.io.FileNotFoundException
      * @throws java.io.IOException
      */
     public static void remove(String sourcePath, DiskShare share) {
-        try(File sourceFile = share.openFile(sourcePath,
+        try (File sourceFile = share.openFile(sourcePath,
                 EnumSet.of(AccessMask.DELETE),
                 null,
                 SMB2ShareAccess.ALL,
                 SMB2CreateDisposition.FILE_OPEN,
-                null)){
+                null)) {
             sourceFile.deleteOnClose();
         }
     }
-
 
 
 }

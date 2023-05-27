@@ -1,8 +1,7 @@
-package com.eshare.smbj.demo;
+package com.eshare.smbj.example;
 
-import com.eshare.smbj.demo.common.Constant;
-import com.eshare.smbj.demo.common.SmbjCommon;
-import com.eshare.smbj.demo.utils.SmbFileUtils;
+import com.eshare.smbj.common.Constant;
+import com.eshare.smbj.utils.SmbFileUtils;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
@@ -13,13 +12,13 @@ import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-public class SmbjHousekeepingDemo extends SmbjCommon {
+public class SmbjHousekeepingDemo {
     public static void main(String[] args) throws IOException {
         String subFolder = "test/";
         Connection conn = null;
         //The name of the share to connect to
         try (
-                Session session = getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
+                Session session = SmbFileUtils.getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
                 DiskShare share = (DiskShare) session.connectShare("LANdrive")
         ) {
             List<FileIdBothDirectoryInformation> fileList = share.list(subFolder, "*");
@@ -40,9 +39,9 @@ public class SmbjHousekeepingDemo extends SmbjCommon {
                 SmbFileUtils.remove(remotePath, share);
                 log.info("=======>File {} has been remove successfully", fileInfo.getFileName());
 
-                //Close connection in the end
-                conn = session.getConnection();
             }
+            //Close connection in the end
+            conn = session.getConnection();
         } finally {
             if (conn != null) {
                 conn.close();

@@ -1,8 +1,7 @@
-package com.eshare.smbj.demo;
+package com.eshare.smbj.example;
 
-import com.eshare.smbj.demo.common.Constant;
-import com.eshare.smbj.demo.common.SmbjCommon;
-import com.eshare.smbj.demo.utils.SmbFileUtils;
+import com.eshare.smbj.common.Constant;
+import com.eshare.smbj.utils.SmbFileUtils;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
@@ -11,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
 @Slf4j
-public class SmbjUploadDemo extends SmbjCommon {
+public class SmbjUploadDemo {
 
     public static void main(String[] args) throws IOException {
         String remoteFolder = "test/";
@@ -19,7 +18,7 @@ public class SmbjUploadDemo extends SmbjCommon {
         Connection conn = null;
         //The name of the share to connect to
         try (
-                Session session = getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
+                Session session = SmbFileUtils.getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
                 DiskShare share = (DiskShare) session.connectShare("LANdrive")
         ) {
             java.io.File source = new java.io.File("/Users/evan/Downloads/" + uploadFile);
@@ -34,7 +33,7 @@ public class SmbjUploadDemo extends SmbjCommon {
             conn = session.getConnection();
         } finally {
             if (conn != null) {
-                conn.close();
+                conn.close(true);
             }
         }
     }
