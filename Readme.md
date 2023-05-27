@@ -34,6 +34,7 @@ Change the value based on your actual needs
 ![](doc/swagger/smb-upload.png)
 
 ### **File in remote folder**
+
 ![](doc/swagger/uploadedFile.png)
 
 ## 2.SMB Download
