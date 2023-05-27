@@ -65,7 +65,7 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
                     continue;
                 }
                 //Check file pattern
-                if (matchPattern(matchFileList, fileInfo, fileDownloadDTO.getFilePattern())) continue;
+                if (!matchPattern(matchFileList, fileInfo, fileDownloadDTO.getFilePattern())) continue;
 
                 log.info("=======>File Name:{}", fileInfo.getFileName());
                 log.info("=======>File lastModifiedTime:{}", fileInfo.getLastWriteTime());
@@ -118,7 +118,7 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
                     continue;
                 }
                 //Check file pattern
-                if (matchPattern(matchFileList, fileInfo, fileDeleteDTO.getFilePattern())) continue;
+                if (!matchPattern(matchFileList, fileInfo, fileDeleteDTO.getFilePattern())) continue;
 
                 log.info("=======>File Name:{}", fileInfo.getFileName());
                 log.info("=======>File lastModifiedTime:{}", fileInfo.getLastWriteTime());
