@@ -1,6 +1,5 @@
 package com.eshare.smbj.service;
 
-import com.eshare.smbj.common.Constant;
 import com.eshare.smbj.common.NotMatchFilesException;
 import com.eshare.smbj.model.FileDeleteDTO;
 import com.eshare.smbj.model.FileDownloadDTO;
@@ -49,7 +48,7 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
 
     @Override
     public boolean download(Session session, FileDownloadDTO fileDownloadDTO) throws IOException {
-        List matchFileList = new ArrayList();
+        List<String> matchFileList = new ArrayList<String>();
         Connection conn = null;
         try (
                 DiskShare share = (DiskShare) session.connectShare(fileDownloadDTO.getShareName());
@@ -102,7 +101,7 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
     @Override
     public boolean delete(Session session, FileDeleteDTO fileDeleteDTO) throws IOException {
 
-        List matchFileList = new ArrayList();
+        List<String> matchFileList = new ArrayList<String>();
         Connection conn = null;
         try (
                 DiskShare share = (DiskShare) session.connectShare(fileDeleteDTO.getShareName());
