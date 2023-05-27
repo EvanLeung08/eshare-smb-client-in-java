@@ -84,7 +84,8 @@ public class SmbFileUtils extends SmbFiles {
      * @throws java.io.FileNotFoundException
      * @throws java.io.IOException
      */
-    public static int download(String sourcePath, DiskShare share, String destPath) throws IOException {
+    public static long download(String sourcePath, DiskShare share, String destPath) throws IOException {
+        long totalBytesRead = 0;
         try (InputStream in = share.openFile(sourcePath,
                 EnumSet.of(AccessMask.GENERIC_READ),
                 null, SMB2ShareAccess.ALL,
@@ -96,10 +97,12 @@ public class SmbFileUtils extends SmbFiles {
             int bytesRead;
             while ((bytesRead = in.read(buffer)) != -1) {
                 out.write(buffer, 0, bytesRead);
+                totalBytesRead += bytesRead;
             }
-            return bytesRead;
         }
+        return totalBytesRead;
     }
+
 
     /**
      * Rename file
