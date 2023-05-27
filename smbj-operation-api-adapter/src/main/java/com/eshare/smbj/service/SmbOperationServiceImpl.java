@@ -3,6 +3,7 @@ package com.eshare.smbj.service;
 import com.eshare.smbj.common.NotMatchFilesException;
 import com.eshare.smbj.model.FileDeleteDTO;
 import com.eshare.smbj.model.FileDownloadDTO;
+import com.eshare.smbj.model.FileSearchDTO;
 import com.eshare.smbj.model.FileUploadDTO;
 import com.eshare.smbj.serviceI.SmbOperationServiceI;
 import com.eshare.smbj.utils.SmbFileUtils;
@@ -64,11 +65,10 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
                     continue;
                 }
                 //Check file pattern
-                if (checkPattern(matchFileList, fileInfo, fileDownloadDTO.getFilePattern())) continue;
+                if (matchPattern(matchFileList, fileInfo, fileDownloadDTO.getFilePattern())) continue;
 
                 log.info("=======>File Name:{}", fileInfo.getFileName());
                 log.info("=======>File lastModifiedTime:{}", fileInfo.getLastWriteTime());
-                log.info("=======>Is file existed?:{}", isExisted);
 
                 String remoteFilePath = fileDownloadDTO.getRemoteFolder() + fileInfo.getFileName();
                 String localFilePath = fileDownloadDTO.getLocalFolder() + fileInfo.getFileName();
@@ -118,11 +118,10 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
                     continue;
                 }
                 //Check file pattern
-                if (checkPattern(matchFileList, fileInfo, fileDeleteDTO.getFilePattern())) continue;
+                if (matchPattern(matchFileList, fileInfo, fileDeleteDTO.getFilePattern())) continue;
 
                 log.info("=======>File Name:{}", fileInfo.getFileName());
                 log.info("=======>File lastModifiedTime:{}", fileInfo.getLastWriteTime());
-                log.info("=======>Is file existed?:{}", isExisted);
 
                 String remotePath = fileDeleteDTO.getRemoteFolder() + fileInfo.getFileName();
 
@@ -146,7 +145,41 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
         return true;
     }
 
-    private boolean checkPattern(List matchFileList, FileIdBothDirectoryInformation fileInfo, String filePattern) {
+    @Override
+    public List<String> search(Session session, FileSearchDTO fileSearchDTO) throws IOException {
+        List<String> matchFileList = new ArrayList<String>();
+        Connection conn = null;
+        try (
+                DiskShare share = (DiskShare) session.connectShare(fileSearchDTO.getShareName());
+        ) {
+            List<FileIdBothDirectoryInformation> fileList = share.list(fileSearchDTO.getRemoteFolder());
+            for (int i = 0; i < fileList.size(); i++) {
+                FileIdBothDirectoryInformation fileInfo = fileList.get(i);
+
+
+                boolean isExisted = SmbFileUtils.isFileExisted(fileSearchDTO.getRemoteFolder(), share, fileInfo);
+                if (!isExisted) {
+                    log.info("File {} is invalid", fileInfo.getFileName());
+                    continue;
+                }
+                //Check file pattern
+                if (!matchPattern(matchFileList, fileInfo, fileSearchDTO.getFilePattern())) continue;
+
+            }
+            //Close connection in the end
+            conn = session.getConnection();
+
+
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        return matchFileList;
+    }
+
+    private boolean matchPattern(List matchFileList, FileIdBothDirectoryInformation fileInfo, String filePattern) {
         // need to check file Pattern here
         Pattern pattern = Pattern.compile(filePattern);
         Matcher matcher = pattern.matcher(fileInfo.getFileName());
@@ -154,11 +187,12 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
         if (matcher.matches()) {
             matchFileList.add(fileInfo.getFileName());
             log.info("File name is expected:{} ", fileInfo.getFileName());
+            return true;
         } else {
             log.info("File name is not expected:{}, go to next file", fileInfo.getFileName());
-            return true;
+            return false;
         }
-        return false;
+
     }
 
 }
