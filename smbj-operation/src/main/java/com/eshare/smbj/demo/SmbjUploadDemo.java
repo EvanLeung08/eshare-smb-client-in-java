@@ -14,13 +14,13 @@ import java.io.IOException;
 public class SmbjUploadDemo extends SmbjCommon {
 
     public static void main(String[] args) throws IOException {
-        String remoteFolder = "";
-        String uploadFile = "25d7ba1c-b55d-4307-baee-03f05c376f4b_3888x4096.jpg";
+        String remoteFolder = "test/";
+        String uploadFile = "test.jpeg";
         Connection conn = null;
         //The name of the share to connect to
         try (
                 Session session = getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
-                DiskShare share = (DiskShare) session.connectShare("share")
+                DiskShare share = (DiskShare) session.connectShare("LANdrive")
         ) {
             java.io.File source = new java.io.File("/Users/evan/Downloads/" + uploadFile);
             //Upload file to remote share drive

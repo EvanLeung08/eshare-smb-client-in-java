@@ -17,22 +17,22 @@ import java.util.List;
 public class SmbjDownloadDemo extends SmbjCommon {
 
     public static void main(String[] args) throws IOException {
-        String subFolder = "";
+        String subFolder = "test/";
         Connection conn = null;
         //The name of the share to connect to
         try (
                 Session session = getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
-                DiskShare share = (DiskShare) session.connectShare("share")
+                DiskShare share = (DiskShare) session.connectShare("LANdrive")
 
         ) {
-            List<FileIdBothDirectoryInformation> fileList = share.list(subFolder, "*");
+            List<FileIdBothDirectoryInformation> fileList = share.list(subFolder);
             for (int i = 0; i < fileList.size(); i++) {
                 FileIdBothDirectoryInformation fileInfo = fileList.get(i);
 
 
                 boolean isExisted = isFileExisted(subFolder, share, fileInfo);
                 if (!isExisted) {
-                    log.info("File {} is not existed", fileInfo.getFileName());
+                    log.info("File {} is invalid", fileInfo.getFileName());
                     continue;
                 }
                 log.info("=======>File Name:{}", fileInfo.getFileName());
@@ -50,7 +50,7 @@ public class SmbjDownloadDemo extends SmbjCommon {
                 log.info("=======>File {} has been downloaded to {} successfully", fileInfo.getFileName(), destPath);
 
                 //Close connection in the end
-                conn = session.getConnection();
+               conn = session.getConnection();
             }
         } finally {
             if (conn != null) {

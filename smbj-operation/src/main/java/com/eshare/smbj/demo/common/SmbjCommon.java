@@ -7,6 +7,7 @@ import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class SmbjCommon {
 
@@ -25,6 +26,9 @@ public class SmbjCommon {
                 //automatically choose latest supported smb version
                 .withMultiProtocolNegotiate(true)
                 .withSigningRequired(true)
+                .withTimeout(2,TimeUnit.MINUTES)
+                .withReadTimeout(1,TimeUnit.MINUTES)
+                .withWriteTimeout(1,TimeUnit.MINUTES)
                 //must enable
                 .withEncryptData(true)
                 .build();

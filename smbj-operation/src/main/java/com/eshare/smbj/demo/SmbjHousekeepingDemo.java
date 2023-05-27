@@ -15,19 +15,19 @@ import java.util.List;
 @Slf4j
 public class SmbjHousekeepingDemo extends SmbjCommon {
     public static void main(String[] args) throws IOException {
-        String subFolder = "";
+        String subFolder = "test/";
         Connection conn = null;
         //The name of the share to connect to
         try (
                 Session session = getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
-                DiskShare share = (DiskShare) session.connectShare("share")
+                DiskShare share = (DiskShare) session.connectShare("LANdrive")
         ) {
             List<FileIdBothDirectoryInformation> fileList = share.list(subFolder, "*");
             for (int i = 0; i < fileList.size(); i++) {
                 FileIdBothDirectoryInformation fileInfo = fileList.get(i);
                 boolean isExisted = isFileExisted(subFolder,share,fileInfo);
                 if (!isExisted) {
-                    log.info("File {} is not existed", fileInfo.getFileName());
+                    log.info("File {} is invalid", fileInfo.getFileName());
                     continue;
                 }
                 log.info("=======>File Name:{}", fileInfo.getFileName());

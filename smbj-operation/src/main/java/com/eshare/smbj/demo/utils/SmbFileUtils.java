@@ -12,6 +12,7 @@ import com.hierynomus.smbj.utils.SmbFiles;
 import org.springframework.util.ObjectUtils;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.EnumSet;
 
 /**
@@ -118,5 +119,7 @@ public class SmbFileUtils extends SmbFiles {
             sourceFile.deleteOnClose();
         }
     }
+
+
 
 }
