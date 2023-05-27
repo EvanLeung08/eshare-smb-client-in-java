@@ -8,10 +8,12 @@ import com.eshare.smbj.serviceI.AuthenticationServiceI;
 import com.eshare.smbj.serviceI.SmbOperationServiceI;
 import com.hierynomus.smbj.session.Session;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +47,7 @@ public class SmbOperationController {
             result.put("ErrorMsg", ex.getLocalizedMessage());
         } finally {
 
-            result.put("Status", isSuccess ? "Success" : "Failed");
+            result.put("Status", isSuccess ? "Success" : "Falure");
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -63,7 +65,7 @@ public class SmbOperationController {
             result.put("ErrorMsg", ex.getLocalizedMessage());
         } finally {
 
-            result.put("Status", isSuccess ? "Success" : "Failed");
+            result.put("Status", isSuccess ? "Success" : "Falure");
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -81,7 +83,7 @@ public class SmbOperationController {
             result.put("ErrorMsg", ex.getLocalizedMessage());
         } finally {
 
-            result.put("Status", isSuccess ? "Success" : "Failed");
+            result.put("Status", isSuccess ? "Success" : "Falure");
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
