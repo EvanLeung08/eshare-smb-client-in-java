@@ -2,7 +2,7 @@
 
 # Getting Started
 
-An API adapter provides some base operation for new learner to study how to use SMBJ in your project.
+An API adapter provides some base operation for new learner to study how to use SMBJ and Jcifs in your project.
 > Smbj only supports SMB2 above version
 > Jcifs only supports SMB1 
 
