@@ -6,4 +6,5 @@ public interface Constant {
     String ACCOUNT = "user";
     //the domain of current account
     String DOMAIN = null;
+    String LEGACY_VERSION = "1.0";
 }

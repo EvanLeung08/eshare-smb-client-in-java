@@ -1,5 +1,6 @@
 package com.eshare.smbj.utils;
 
+import com.eshare.smbj.model.FileUploadDTO;
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
@@ -15,6 +16,8 @@ import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 import com.hierynomus.smbj.utils.SmbFiles;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
 
@@ -166,9 +169,9 @@ public class SmbFileUtils extends SmbFiles {
     /**
      * Check if current file is existed
      *
-     * @param remoteFolder
-     * @param share
-     * @param fileInfo
+     * @param remoteFolder remote folder
+     * @param share        share name
+     * @param fileInfo     file information
      * @return
      */
     public static boolean isFileExisted(String remoteFolder, DiskShare share, FileIdBothDirectoryInformation fileInfo) {
@@ -181,5 +184,7 @@ public class SmbFileUtils extends SmbFiles {
         }
         return flag;
     }
+
+
 
 }

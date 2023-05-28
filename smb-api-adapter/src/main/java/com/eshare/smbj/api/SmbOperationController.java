@@ -1,10 +1,12 @@
 package com.eshare.smbj.api;
 
 
+import com.eshare.smbj.common.Constant;
 import com.eshare.smbj.model.FileDeleteDTO;
 import com.eshare.smbj.model.FileDownloadDTO;
 import com.eshare.smbj.model.FileSearchDTO;
 import com.eshare.smbj.model.FileUploadDTO;
+import com.eshare.smbj.service.SmbLegacyV1Support;
 import com.eshare.smbj.serviceI.AuthenticationServiceI;
 import com.eshare.smbj.serviceI.SmbOperationServiceI;
 import com.hierynomus.smbj.session.Session;
@@ -13,6 +15,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,9 +41,12 @@ public class SmbOperationController {
 
     private final SmbOperationServiceI smbOperationServiceI;
 
-    public SmbOperationController(AuthenticationServiceI authenticationServiceI, SmbOperationServiceI smbOperationServiceI) {
+    private final SmbLegacyV1Support smbLegacyV1Support;
+
+    public SmbOperationController(AuthenticationServiceI authenticationServiceI, SmbOperationServiceI smbOperationServiceI, SmbLegacyV1Support smbLegacyV1Support) {
         this.authenticationServiceI = authenticationServiceI;
         this.smbOperationServiceI = smbOperationServiceI;
+        this.smbLegacyV1Support = smbLegacyV1Support;
     }
 
     @Operation(summary = "Upload a file to the server")
@@ -51,9 +57,14 @@ public class SmbOperationController {
             @RequestBody FileUploadDTO fileUploadDTO) {
         Map<String, String> result = new HashMap<>();
         boolean isSuccess = false;
+
         try {
-            final Session session = authenticationServiceI.connectAndVerify(fileUploadDTO.getRemoteHost(), fileUploadDTO.getAccount(), fileUploadDTO.getPassword(), fileUploadDTO.getDomain());
-            isSuccess = smbOperationServiceI.upload(session, fileUploadDTO);
+            if (Constant.LEGACY_VERSION.equalsIgnoreCase(fileUploadDTO.getSmbVersion())) {
+                isSuccess = smbLegacyV1Support.upload(fileUploadDTO);
+            } else {
+                final Session session = authenticationServiceI.connectAndVerify(fileUploadDTO.getRemoteHost(), fileUploadDTO.getAccount(), fileUploadDTO.getPassword(), fileUploadDTO.getDomain());
+                isSuccess = smbOperationServiceI.upload(session, fileUploadDTO);
+            }
         } catch (Exception ex) {
             log.error("Error found in upload, parameters:{},err:", fileUploadDTO.toString(), ex);
             result.put("ErrorMsg", ex.getLocalizedMessage());
@@ -73,8 +84,12 @@ public class SmbOperationController {
         Map<String, String> result = new HashMap<>();
         boolean isSuccess = false;
         try {
-            final Session session = authenticationServiceI.connectAndVerify(fileDownloadDTO.getRemoteHost(), fileDownloadDTO.getAccount(), fileDownloadDTO.getPassword(), fileDownloadDTO.getDomain());
-            isSuccess = smbOperationServiceI.download(session, fileDownloadDTO);
+            if (Constant.LEGACY_VERSION.equalsIgnoreCase(fileDownloadDTO.getSmbVersion())) {
+                isSuccess = smbLegacyV1Support.download(fileDownloadDTO);
+            } else {
+                final Session session = authenticationServiceI.connectAndVerify(fileDownloadDTO.getRemoteHost(), fileDownloadDTO.getAccount(), fileDownloadDTO.getPassword(), fileDownloadDTO.getDomain());
+                isSuccess = smbOperationServiceI.download(session, fileDownloadDTO);
+            }
         } catch (Exception ex) {
             log.error("Error found in download, parameters:{},err:", fileDownloadDTO.toString(), ex);
             result.put("ErrorMsg", ex.getLocalizedMessage());
@@ -94,8 +109,12 @@ public class SmbOperationController {
         Map<String, String> result = new HashMap<>();
         boolean isSuccess = false;
         try {
-            final Session session = authenticationServiceI.connectAndVerify(fileDeleteDTO.getRemoteHost(), fileDeleteDTO.getAccount(), fileDeleteDTO.getPassword(), fileDeleteDTO.getDomain());
-            isSuccess = smbOperationServiceI.delete(session, fileDeleteDTO);
+            if (Constant.LEGACY_VERSION.equalsIgnoreCase(fileDeleteDTO.getSmbVersion())) {
+                isSuccess = smbLegacyV1Support.delete(fileDeleteDTO);
+            } else {
+                final Session session = authenticationServiceI.connectAndVerify(fileDeleteDTO.getRemoteHost(), fileDeleteDTO.getAccount(), fileDeleteDTO.getPassword(), fileDeleteDTO.getDomain());
+                isSuccess = smbOperationServiceI.delete(session, fileDeleteDTO);
+            }
         } catch (Exception ex) {
             log.error("Error found in delete, parameters:{},err:", fileDeleteDTO.toString(), ex);
             result.put("ErrorMsg", ex.getLocalizedMessage());
@@ -115,8 +134,12 @@ public class SmbOperationController {
         Map<String, Object> result = new HashMap<>();
         List<String> matchFileList = null;
         try {
-            final Session session = authenticationServiceI.connectAndVerify(fileSearchDTO.getRemoteHost(), fileSearchDTO.getAccount(), fileSearchDTO.getPassword(), fileSearchDTO.getDomain());
-            matchFileList = smbOperationServiceI.search(session, fileSearchDTO);
+            if (Constant.LEGACY_VERSION.equalsIgnoreCase(fileSearchDTO.getSmbVersion())) {
+                matchFileList = smbLegacyV1Support.search(fileSearchDTO);
+            } else {
+                final Session session = authenticationServiceI.connectAndVerify(fileSearchDTO.getRemoteHost(), fileSearchDTO.getAccount(), fileSearchDTO.getPassword(), fileSearchDTO.getDomain());
+                matchFileList = smbOperationServiceI.search(session, fileSearchDTO);
+            }
         } catch (Exception ex) {
             log.error("Error found in search, parameters:{},err:", fileSearchDTO.toString(), ex);
             result.put("ErrorMsg", ex.getLocalizedMessage());

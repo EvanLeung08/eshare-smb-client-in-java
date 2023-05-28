@@ -15,4 +15,5 @@ public class ConnectionDTO {
     protected String domain;
     protected String account;
     protected String password;
+    protected String smbVersion="2.0";
 }
