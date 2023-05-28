@@ -85,7 +85,7 @@ public class SmbOperationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete  files from the server")
+    @Operation(summary = "Delete files from the server")
     @ApiResponse(responseCode = "200", description = "Files deleted successfully")
     @DeleteMapping("/smb/delete")
     public ResponseEntity<Object> delete(
