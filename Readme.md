@@ -4,6 +4,12 @@
 
 An API adapter provides some base operation for new learner to study how to use SMBJ in your project.
 > Smbj only supports SMB2 above version
+> Jcifs only supports SMB1 
+
+# Features:
+- Supports SMB2.0 above CRUD operation by default
+- Supports SMB1.0 CRUD operation by input ``smbVersion:1.0`` field in api request parameters
+
 
 # smbj-api-adapter
 ## Core Flow
@@ -19,6 +25,8 @@ http://localhost:8080/swagger-ui/index.html
 
 ## 1.SMB Upload
 Change the value based on your actual needs
+
+For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
 ```json
 {
     "remoteHost": "192.168.50.69",
@@ -39,6 +47,8 @@ Change the value based on your actual needs
 
 ## 2.SMB Download
 Change the value based on your actual needs
+
+For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
 ```json
 {
     "remoteHost": "192.168.50.69",
@@ -63,6 +73,8 @@ Change the value based on your actual needs
 
 ## 3.SMB Delete
 Change the value based on your actual needs
+
+For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
 ```json
 {
     "remoteHost": "192.168.50.69",
@@ -84,16 +96,18 @@ Change the value based on your actual needs
 
 ## 4.SMB Search
 Change the value based on your actual needs
+
+For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
 ```json
 {
-    "remoteHost": "192.168.50.69",
-    "shareName": "LANdrive",
-    "domain": null,
-    "account": "user",
-    "password": "123456",
-    "remoteFolder": "test/",
-    "filePattern": ".*\\.mp4$"
-}
+     "remoteHost": "192.168.50.69",
+     "shareName": "LANdrive",
+     "domain": null,
+     "account": "user",
+     "password": "123456",
+     "remoteFolder": "test/",
+     "filePattern": ".*\\.mp4$"
+ }
 ```
 ![](doc/swagger/smb-search.png)
 
