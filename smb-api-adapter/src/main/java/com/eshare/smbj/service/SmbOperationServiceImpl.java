@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * SMB 2.0 above Operation Service
+ *
+ * @author Evan Leung
+ */
 @Slf4j
 @Service
 public class SmbOperationServiceImpl implements SmbOperationServiceI {
@@ -27,7 +32,6 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
     @Override
     public boolean upload(Session session, FileUploadDTO fileUploadDTO) throws IOException {
 
-        //The name of the share to connect to
         Connection conn = null;
         try (
                 DiskShare share = (DiskShare) session.connectShare(fileUploadDTO.getShareName());
