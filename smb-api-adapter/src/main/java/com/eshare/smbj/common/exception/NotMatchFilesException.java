@@ -1,4 +1,4 @@
-package com.eshare.smbj.common;
+package com.eshare.smbj.common.exception;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

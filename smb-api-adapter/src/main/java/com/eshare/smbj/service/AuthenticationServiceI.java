@@ -1,4 +1,4 @@
-package com.eshare.smbj.serviceI;
+package com.eshare.smbj.service;
 
 import com.hierynomus.smbj.session.Session;
 

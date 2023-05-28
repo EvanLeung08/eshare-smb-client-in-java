@@ -1,9 +1,9 @@
-package com.eshare.smbj.service;
+package com.eshare.smbj.service.impl;
 
-import com.eshare.smbj.common.AuthenticationException;
+import com.eshare.smbj.common.exception.AuthenticationException;
 import com.eshare.smbj.common.Constant;
-import com.eshare.smbj.serviceI.AuthenticationServiceI;
-import com.eshare.smbj.utils.SmbFileUtils;
+import com.eshare.smbj.service.AuthenticationServiceI;
+import com.eshare.smbj.common.utils.SmbFileUtils;
 import com.hierynomus.smbj.session.Session;
 import org.springframework.stereotype.Service;
 

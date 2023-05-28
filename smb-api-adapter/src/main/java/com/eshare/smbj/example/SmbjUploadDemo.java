@@ -1,7 +1,7 @@
 package com.eshare.smbj.example;
 
 import com.eshare.smbj.common.Constant;
-import com.eshare.smbj.utils.SmbFileUtils;
+import com.eshare.smbj.common.utils.SmbFileUtils;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;

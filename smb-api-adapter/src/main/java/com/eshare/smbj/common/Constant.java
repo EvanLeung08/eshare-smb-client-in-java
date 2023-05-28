@@ -7,4 +7,5 @@ public interface Constant {
     //the domain of current account
     String DOMAIN = null;
     String LEGACY_VERSION = "1.0";
+    String SUCCESS_CODE = "200";
 }

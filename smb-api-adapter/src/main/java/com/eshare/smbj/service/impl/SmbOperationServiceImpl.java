@@ -1,12 +1,12 @@
-package com.eshare.smbj.service;
+package com.eshare.smbj.service.impl;
 
-import com.eshare.smbj.common.NotMatchFilesException;
+import com.eshare.smbj.common.exception.NotMatchFilesException;
 import com.eshare.smbj.model.FileDeleteDTO;
 import com.eshare.smbj.model.FileDownloadDTO;
 import com.eshare.smbj.model.FileSearchDTO;
 import com.eshare.smbj.model.FileUploadDTO;
-import com.eshare.smbj.serviceI.SmbOperationServiceI;
-import com.eshare.smbj.utils.SmbFileUtils;
+import com.eshare.smbj.service.SmbOperationServiceI;
+import com.eshare.smbj.common.utils.SmbFileUtils;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;

@@ -1,4 +1,4 @@
-package com.eshare.smbj.utils;
+package com.eshare.smbj.common.utils;
 
 import com.eshare.smbj.model.FileUploadDTO;
 import com.hierynomus.msdtyp.AccessMask;

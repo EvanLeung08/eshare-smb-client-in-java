@@ -1,7 +1,7 @@
 package com.eshare.smbj.example;
 
 import com.eshare.smbj.common.Constant;
-import com.eshare.smbj.utils.SmbFileUtils;
+import com.eshare.smbj.common.utils.SmbFileUtils;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.smbj.connection.Connection;
 import com.hierynomus.smbj.session.Session;
@@ -9,7 +9,6 @@ import com.hierynomus.smbj.share.DiskShare;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
