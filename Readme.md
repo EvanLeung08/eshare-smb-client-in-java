@@ -65,9 +65,12 @@ For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
 }
 ```
 ![](doc/swagger/smb-download.png)
+
 ### **File in local folder**
+
 > The file will be renamed to ".d" after download successfully by default
-![](doc/swagger/downloadedFIle.png)
+
+>![](doc/swagger/downloadedFIle.png)
 > The file has been downloaded to local storage and updated the modified time
 
 ![](doc/swagger/downloadedFIle2.png)
@@ -90,6 +93,7 @@ For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
 ![](doc/swagger/smb-delete.png)
 
 ### **File has been removed from remote folder**
+
 > The file has been removed from remote folder
 
 ![](doc/swagger/removedFile.png)
@@ -110,8 +114,11 @@ For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
      "filePattern": ".*\\.mp4$"
  }
 ```
+
 ![](doc/swagger/smb-search.png)
 
 ### **File list in the response**
+
 > The file will show in API response
+>
 ![](doc/swagger/searchedFile.png)
