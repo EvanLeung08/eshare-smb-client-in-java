@@ -1,30 +1,26 @@
 package com.eshare.smbj.common.utils;
 
-import com.eshare.smbj.model.FileUploadDTO;
 import com.hierynomus.msdtyp.AccessMask;
-import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
-import com.hierynomus.mssmb2.SMB2CreateOptions;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
 import com.hierynomus.smbj.SMBClient;
 import com.hierynomus.smbj.SmbConfig;
 import com.hierynomus.smbj.auth.AuthenticationContext;
 import com.hierynomus.smbj.connection.Connection;
-import com.hierynomus.smbj.io.InputStreamByteChunkProvider;
 import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 import com.hierynomus.smbj.utils.SmbFiles;
-import jcifs.smb.NtlmPasswordAuthentication;
-import jcifs.smb.SmbFile;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ObjectUtils;
 
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * SMB Utils
@@ -36,7 +32,7 @@ public class SmbFileUtils extends SmbFiles {
 
 
     /**
-     * Get session
+     * Get sessionø
      *
      * @param remoteHost remote host
      * @param account    account
@@ -129,20 +125,8 @@ public class SmbFileUtils extends SmbFiles {
                 SMB2ShareAccess.ALL,
                 SMB2CreateDisposition.FILE_OPEN,
                 null)) {
-            try (InputStream in = sourceFile.getInputStream()) {
-                if (!ObjectUtils.isEmpty(newFilePath) && in != null) {
-                    try (File newFile = share.openFile(newFilePath,
-                            EnumSet.of(AccessMask.GENERIC_WRITE),
-                            EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
-                            EnumSet.of(SMB2ShareAccess.FILE_SHARE_WRITE),
-                            overwrite ? SMB2CreateDisposition.FILE_OVERWRITE_IF : SMB2CreateDisposition.FILE_OPEN,
-                            EnumSet.noneOf(SMB2CreateOptions.class))) {
-                        r = newFile.write(new InputStreamByteChunkProvider(in));
-                    }
-                }
-            }
-            //Delete the source file after rename
-            sourceFile.deleteOnClose();
+            //rename files
+            sourceFile.rename(newFilePath, overwrite);
         }
         return r;
     }
@@ -184,7 +168,6 @@ public class SmbFileUtils extends SmbFiles {
         }
         return flag;
     }
-
 
 
 }

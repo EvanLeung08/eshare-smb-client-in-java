@@ -80,6 +80,7 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
 
                 //Download file from share drive
                 SmbFileUtils.download(remoteFilePath, share, localFilePath);
+
                 //Rename file after download successfully
                 if (fileDownloadDTO.isNeedRename()) {
                     SmbFileUtils.rename(remoteFilePath, share, newFileName, true);
