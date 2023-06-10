@@ -2,10 +2,7 @@ package com.eshare.smbj.api;
 
 
 import com.eshare.smbj.common.Constant;
-import com.eshare.smbj.model.FileDeleteDTO;
-import com.eshare.smbj.model.FileDownloadDTO;
-import com.eshare.smbj.model.FileSearchDTO;
-import com.eshare.smbj.model.FileUploadDTO;
+import com.eshare.smbj.model.*;
 import com.eshare.smbj.service.impl.SmbLegacyV1Support;
 import com.eshare.smbj.service.AuthenticationServiceI;
 import com.eshare.smbj.service.SmbOperationServiceI;
@@ -48,7 +45,7 @@ public class SmbOperationController {
         this.smbLegacyV1Support = smbLegacyV1Support;
     }
 
-    @Operation(summary = "Upload a file to the server")
+    @Operation(summary = "Upload a file to remote server")
     @ApiResponse(responseCode = Constant.SUCCESS_CODE, description = "File uploaded successfully")
     @PostMapping("/smb/upload")
     public ResponseEntity<Object> upload(
@@ -74,7 +71,7 @@ public class SmbOperationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "Download files from the server")
+    @Operation(summary = "Download files from remote server")
     @ApiResponse(responseCode = Constant.SUCCESS_CODE, description = "Files downloaded successfully")
     @PostMapping("/smb/download")
     public ResponseEntity<Object> download(
@@ -99,7 +96,7 @@ public class SmbOperationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete files from the server")
+    @Operation(summary = "Delete files from remote server")
     @ApiResponse(responseCode = Constant.SUCCESS_CODE, description = "Files deleted successfully")
     @DeleteMapping("/smb/delete")
     public ResponseEntity<Object> delete(
@@ -124,7 +121,7 @@ public class SmbOperationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "Search files from the server")
+    @Operation(summary = "Search files from remote server")
     @ApiResponse(responseCode = Constant.SUCCESS_CODE, description = "File list response  successfully")
     @PostMapping("/smb/search")
     public ResponseEntity<Object> search(
@@ -149,5 +146,29 @@ public class SmbOperationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @Operation(summary = "Rename files from remote server")
+    @ApiResponse(responseCode = Constant.SUCCESS_CODE, description = "Files downloaded successfully")
+    @PostMapping("/smb/rename")
+    public ResponseEntity<Object> rename(
+            @ApiParam(value = "FileRenamedDTO object containing details of the file to be reanamed", required = true)
+            @RequestBody FileRenameDTO fileRenameDTO) {
+        Map<String, String> result = new HashMap<>();
+        boolean isSuccess = false;
+        try {
+            if (Constant.LEGACY_VERSION.equalsIgnoreCase(fileRenameDTO.getSmbVersion())) {
+                isSuccess = smbLegacyV1Support.rename(fileRenameDTO);
+            } else {
+                final Session session = authenticationServiceI.connectAndVerify(fileRenameDTO.getRemoteHost(), fileRenameDTO.getAccount(), fileRenameDTO.getPassword(), fileRenameDTO.getDomain());
+                isSuccess = smbOperationServiceI.rename(session, fileRenameDTO);
+            }
+        } catch (Exception ex) {
+            log.error("Error found in rename, parameters:{},err:", fileRenameDTO.toString(), ex);
+            result.put("ErrorMsg", ex.getLocalizedMessage());
+        } finally {
+
+            result.put("Status", isSuccess ? "Success" : "Falure");
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 }

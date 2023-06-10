@@ -1,10 +1,7 @@
 package com.eshare.smbj.service.impl;
 
 import com.eshare.smbj.common.exception.NotMatchFilesException;
-import com.eshare.smbj.model.FileDeleteDTO;
-import com.eshare.smbj.model.FileDownloadDTO;
-import com.eshare.smbj.model.FileSearchDTO;
-import com.eshare.smbj.model.FileUploadDTO;
+import com.eshare.smbj.model.*;
 import com.eshare.smbj.service.SmbOperationServiceI;
 import com.eshare.smbj.common.utils.SmbFileUtils;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
@@ -13,6 +10,7 @@ import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -86,6 +84,61 @@ public class SmbOperationServiceImpl implements SmbOperationServiceI {
                     SmbFileUtils.rename(remoteFilePath, share, newFileName, true);
                 }
                 log.info("=======>File {} has been downloaded to {} successfully", fileInfo.getFileName(), localFilePath);
+
+            }
+            //Close connection in the end
+            conn = session.getConnection();
+
+
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        if (matchFileList.isEmpty()) {
+            throw new NotMatchFilesException("No any match files found, please check your file pattern!", null);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean rename(Session session, FileRenameDTO fileRenameDTO) throws IOException {
+        List<String> matchFileList = new ArrayList<String>();
+        String prefix = fileRenameDTO.getPrefix();
+        String newFileName = fileRenameDTO.getNewFileName();
+        String suffix = fileRenameDTO.getSuffix();
+        Connection conn = null;
+        try (
+                DiskShare share = (DiskShare) session.connectShare(fileRenameDTO.getShareName());
+        ) {
+            List<FileIdBothDirectoryInformation> fileList = share.list(fileRenameDTO.getRemoteFolder());
+            for (int i = 0; i < fileList.size(); i++) {
+                FileIdBothDirectoryInformation fileInfo = fileList.get(i);
+
+
+                boolean isExisted = SmbFileUtils.isFileExisted(fileRenameDTO.getRemoteFolder(), share, fileInfo);
+                if (!isExisted) {
+                    log.info("File {} is invalid", fileInfo.getFileName());
+                    continue;
+                }
+                //Check file pattern
+                if (!matchPattern(matchFileList, fileInfo, fileRenameDTO.getFilePattern())) continue;
+
+                log.info("=======>File Name:{}", fileInfo.getFileName());
+                log.info("=======>File lastModifiedTime:{}", fileInfo.getLastWriteTime());
+
+                String remoteFilePath = fileRenameDTO.getRemoteFolder() + fileInfo.getFileName();
+                if (!ObjectUtils.isEmpty(newFileName)) {
+                    newFileName = fileRenameDTO.getRemoteFolder() + prefix + newFileName + suffix;
+                } else {
+                    newFileName = fileRenameDTO.getRemoteFolder() + prefix + fileInfo.getFileName() + suffix;
+                }
+
+                //Rename file after download successfully
+                SmbFileUtils.rename(remoteFilePath, share, newFileName, true);
+                log.info("=======>File {} has been renamed to {} successfully", fileInfo.getFileName(), newFileName);
 
             }
             //Close connection in the end

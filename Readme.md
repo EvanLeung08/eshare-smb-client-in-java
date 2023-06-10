@@ -122,3 +122,35 @@ For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
 > The file will show in API response
 >
 ![](doc/swagger/searchedFile.png)
+
+## 5.SMB Rename
+Change the value based on your actual needs
+
+For SMB1.0 , please add one more parameter ``"smbVersion":"1.0"``
+```json
+{
+    "remoteHost": "192.168.50.69",
+    "shareName": "LANdrive",
+    "domain": null,
+    "account": "user",
+    "password": "123456",
+    "remoteFolder": "test/",
+    "filePattern": ".*\\.mp4$",
+    "prefix": "test_",
+    "suffix": ".d",
+    "newFileName": "after"
+}
+```
+![](doc/swagger/smb-rename.png)
+
+### **File has been renamed successfully**
+
+**Before**
+
+![](doc/swagger/before.png)
+
+**After**
+
+![](doc/swagger/after.png)
+
+

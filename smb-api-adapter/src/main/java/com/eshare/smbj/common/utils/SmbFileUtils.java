@@ -46,10 +46,10 @@ public class SmbFileUtils extends SmbFiles {
                 //automatically choose latest supported smb version
                 .withMultiProtocolNegotiate(true)
                 .withSigningRequired(false)
-                .withTimeout(20, TimeUnit.SECONDS)
-                .withReadTimeout(10, TimeUnit.SECONDS)
-                .withWriteTimeout(10, TimeUnit.SECONDS)
-                .withTransactTimeout(10, TimeUnit.SECONDS)
+                .withTimeout(40, TimeUnit.SECONDS)
+                .withReadTimeout(100, TimeUnit.SECONDS)
+                .withWriteTimeout(100, TimeUnit.SECONDS)
+                .withTransactTimeout(100, TimeUnit.SECONDS)
                 //must enable
                 .withEncryptData(true)
                 .build();

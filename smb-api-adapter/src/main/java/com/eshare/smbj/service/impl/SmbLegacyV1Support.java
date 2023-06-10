@@ -1,13 +1,11 @@
 package com.eshare.smbj.service.impl;
 
 import com.eshare.smbj.common.exception.NotMatchFilesException;
-import com.eshare.smbj.model.FileDeleteDTO;
-import com.eshare.smbj.model.FileDownloadDTO;
-import com.eshare.smbj.model.FileSearchDTO;
-import com.eshare.smbj.model.FileUploadDTO;
+import com.eshare.smbj.model.*;
 import jcifs.smb.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -96,6 +94,52 @@ public class SmbLegacyV1Support {
                 log.info("=======>File {} has been downloaded to {} successfully", fileName, localFilePath);
             }
 
+            // Rename file after download successfully
+            SmbFile newFile = new SmbFile(file.getParent() + newFileName, auth);
+            file.renameTo(newFile);
+            log.info("=======>File {} has been renamed to {} successfully", fileName, newFileName);
+        }
+
+        if (matchFileList.isEmpty()) {
+            throw new NotMatchFilesException("No any match files found, please check your file pattern!", null);
+        }
+
+        return true;
+    }
+
+
+    public boolean rename(FileRenameDTO fileRenameDTO) throws IOException {
+        List<String> matchFileList = new ArrayList<String>();
+        String subFolder = fileRenameDTO.getRemoteFolder();
+        String remoteHost = fileRenameDTO.getRemoteHost();
+        String account = fileRenameDTO.getAccount();
+        String psw = fileRenameDTO.getPassword();
+        String domain = fileRenameDTO.getDomain();
+        String prefix = fileRenameDTO.getPrefix();
+        String newFileName = fileRenameDTO.getNewFileName();
+        String suffix = fileRenameDTO.getSuffix();
+
+        NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(domain, account, psw);
+        String smbUrl = "smb://" + remoteHost + "/" + fileRenameDTO.getShareName() + "/" + subFolder;
+        SmbFile smbFolder = new SmbFile(smbUrl, auth);
+
+        SmbFile[] files = smbFolder.listFiles();
+
+        for (SmbFile file : files) {
+            String fileName = file.getName();
+            log.info("=======>File Name:{}", fileName);
+            log.info("=======>File lastModifiedTime:{}", file.getLastModified());
+            log.info("=======>Is file existed?:{}", file.exists());
+
+            //Check file pattern
+            if (!matchPattern(matchFileList, file, fileRenameDTO.getFilePattern())) continue;
+
+
+            if (!ObjectUtils.isEmpty(newFileName)) {
+                newFileName = prefix + newFileName + suffix;
+            } else {
+                newFileName = prefix + fileName + suffix;
+            }
             // Rename file after download successfully
             SmbFile newFile = new SmbFile(file.getParent() + newFileName, auth);
             file.renameTo(newFile);
