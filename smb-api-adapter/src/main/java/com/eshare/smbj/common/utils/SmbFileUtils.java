@@ -45,7 +45,8 @@ public class SmbFileUtils extends SmbFiles {
         SmbConfig config = SmbConfig.builder()
                 //automatically choose latest supported smb version
                 .withMultiProtocolNegotiate(true)
-                .withSigningRequired(false)
+                .withSigningRequired(true)
+                .withDfsEnabled(true)
                 .withTimeout(60, TimeUnit.SECONDS)
                 .withReadTimeout(300, TimeUnit.SECONDS)
                 .withWriteTimeout(300, TimeUnit.SECONDS)
