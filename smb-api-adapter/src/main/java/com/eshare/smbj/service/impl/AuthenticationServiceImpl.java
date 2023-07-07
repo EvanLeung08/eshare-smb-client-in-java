@@ -15,7 +15,7 @@ public class AuthenticationServiceImpl implements AuthenticationServiceI {
     public Session connectAndVerify(String remoteHost, String account, String password, String domain) {
         Session session;
         try {
-            session = SmbFileUtils.getSession(Constant.REMOTE_HOST, Constant.ACCOUNT, Constant.PSW, Constant.DOMAIN);
+            session = SmbFileUtils.getSession(remoteHost, account, password, domain);
         } catch (Exception e) {
             throw new AuthenticationException("Failed to connect remote folder through SMB protocol", e);
         }
